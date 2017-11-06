@@ -30,6 +30,25 @@ namespace Battleship.Console
                 System.Console.WriteLine(String.Format("Game id is: {0}", service.FindGameByName(GameName)));
             }
 
+
+            var field = new Dictionary<string, bool>();
+            var sb = new StringBuilder();
+            sb.AppendLine("  1 2 3 4 5 6 7 8 9 10");
+
+            for (char c = 'a'; c <= 'j'; c++)
+            {
+                sb.AppendLine();
+                sb.AppendFormat("{0} ", char.ToUpper(c));
+                for (int i = '0'; i <= '9'; i++)
+                {
+                    field.Add(string.Format("{0}{1}", c, i), false);
+
+                    sb.AppendFormat("* ", i);
+                }
+            }
+
+            System.Console.WriteLine(sb.ToString());
+
             System.Console.ReadKey();
         }
     }

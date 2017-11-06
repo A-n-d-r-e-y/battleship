@@ -9,7 +9,7 @@ namespace Battleship.Core
     public abstract class BattleshipRepositoryBase
     {
         public abstract Guid CreateGame(string GameName, string HostPlayerName);
-        public abstract Guid FindGame(string GameName);
+        public abstract Nullable<Guid> FindGame(string GameName);
         public abstract bool JoinGame(Guid GameId, string GuestPlayerName);
     }
 }

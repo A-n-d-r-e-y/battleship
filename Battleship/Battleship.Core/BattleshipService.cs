@@ -23,7 +23,7 @@ namespace Battleship.Core
             return repository.JoinGame(game, SecondPlayerName);
         }
 
-        public Guid FindGameByName(string GameName)
+        public Nullable<Guid> FindGameByName(string GameName)
         {
             return repository.FindGame(GameName);
         }
