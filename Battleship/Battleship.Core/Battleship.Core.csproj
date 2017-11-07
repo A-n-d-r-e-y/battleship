@@ -42,6 +42,9 @@
   <ItemGroup>
     <Compile Include="BattleshipRepositoryBase.cs" />
     <Compile Include="BattleshipService.cs" />
+    <Compile Include="Model\Cell.cs" />
+    <Compile Include="Model\Fleet.cs" />
+    <Compile Include="Model\Ship.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

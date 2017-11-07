@@ -33,7 +33,7 @@ namespace Battleship.Console
 
             var field = new Dictionary<string, bool>();
             var sb = new StringBuilder();
-            sb.AppendLine("  1 2 3 4 5 6 7 8 9 10");
+            sb.Append("  1 2 3 4 5 6 7 8 9 10");
 
             for (char c = 'a'; c <= 'j'; c++)
             {
