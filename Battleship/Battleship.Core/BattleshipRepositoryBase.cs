@@ -11,5 +11,7 @@ namespace Battleship.Core
         public abstract Guid CreateGame(string GameName, string HostPlayerName);
         public abstract Nullable<Guid> FindGame(string GameName);
         public abstract bool JoinGame(Guid GameId, string GuestPlayerName);
+        public abstract bool AddShipToFleet(Guid gameId, string playerName, string coordinates);
+        public abstract bool CheckCell(Guid gameId, string playerName, int x, char y);
     }
 }

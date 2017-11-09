@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Battleship.Core.Model
+namespace Battleship.Console.Model
 {
     public class Ship
     {
-        private IEnumerable<Cell> Cells;
+        public IEnumerable<Cell> Cells;
 
         public Ship(IEnumerable<Cell> Cells)
         {

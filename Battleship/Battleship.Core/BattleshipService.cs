@@ -27,5 +27,15 @@ namespace Battleship.Core
         {
             return repository.FindGame(GameName);
         }
+
+        public bool AddShipToPlayersFleet(Guid GameId, string PlayerName, string coordinates)
+        {
+            return repository.AddShipToFleet(GameId, PlayerName, coordinates);
+        }
+
+        public bool CheckCell(Guid GameId, string PlayerName, int X, char Y)
+        {
+            return repository.CheckCell(GameId, PlayerName, X, Y);
+        }
     }
 }

@@ -4,10 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Battleship.Core.Model
+namespace Battleship.Console.Model
 {
     public class Cell
     {
+        public class CellEqualityComparer : IEqualityComparer<Cell>
+        {
+            public bool Equals(Cell x, Cell y)
+            {
+                return x.ToString() == y.ToString();
+            }
+
+            public int GetHashCode(Cell obj)
+            {
+                return obj.ToString().GetHashCode();
+            }
+        }
+
         public int X { get; private set; }
         public char Y { get; private set; }
 
@@ -21,5 +34,10 @@ namespace Battleship.Core.Model
         }
 
         public Cell(string Coord) : this(int.Parse(Coord.Substring(0, 1)), char.Parse(Coord.Substring(1, 1))) { }
+
+        public override string ToString()
+        {
+            return string.Format("{0}{1}", X, Y);
+        }
     }
 }
