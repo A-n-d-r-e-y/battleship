@@ -33,9 +33,9 @@ namespace Battleship.Core
             return repository.AddShipToFleet(GameId, PlayerName, coordinates);
         }
 
-        public bool CheckCell(Guid GameId, string PlayerName, int X, char Y)
+        public bool CheckShip(Guid GameId, int X, char Y)
         {
-            return repository.CheckCell(GameId, PlayerName, X, Y);
+            return repository.CheckShip(GameId, X, Y);
         }
     }
 }

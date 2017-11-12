@@ -62,19 +62,16 @@ namespace Battleship.Console
             return false;
         }
 
-        public override bool CheckCell(Guid GameId, string PlayerName, int X, char Y)
+        public override bool CheckShip(Guid GameId, int X, char Y)
         {
             var cell = new Cell(X, Y);
             var comparer = new Cell.CellEqualityComparer();
 
-            if (GameId == this.GameId.Value && PlayerName == this.GuestPlayerName)
+            if (GameId == this.GameId.Value)
             {
-                return GuestPlayersFleet.GetShipsCells().Contains<Cell>(cell, comparer);
-            }
-
-            if (GameId == this.GameId.Value && PlayerName == this.HostPlayerName)
-            {
-                return HostPlayersFleet.GetShipsCells().Contains<Cell>(cell, comparer);
+                return GuestPlayersFleet.GetShipsCells()
+                    .Union(HostPlayersFleet.GetShipsCells())
+                    .Contains<Cell>(cell, comparer);
             }
 
             return false;
