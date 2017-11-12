@@ -33,7 +33,29 @@ namespace Battleship.Console.Model
             this.Y = Y;
         }
 
-        public Cell(string Coord) : this(int.Parse(Coord.Substring(0, 1)), char.Parse(Coord.Substring(1, 1))) { }
+        //public Cell(string Coord) : this(int.Parse(Coord.Substring(0, 1)), char.Parse(Coord.Substring(1, 1))) { }
+
+        public Cell(string coord)
+        {
+            if (coord.Length != 2) throw new ArgumentException("coord");
+
+            string n1 = coord.Substring(0, 1);
+            string n2 = coord.Substring(1, 1);
+            int x;
+            char y;
+
+            if (int.TryParse(n1, out x) && char.TryParse(n2, out y))
+            {
+                this.X = x;
+                this.Y = y;
+            }
+            else if (int.TryParse(n2, out x) && char.TryParse(n1, out y))
+            {
+                this.X = x;
+                this.Y = y;
+            }
+            else throw new ArgumentException("coord");
+        }
 
         public override string ToString()
         {

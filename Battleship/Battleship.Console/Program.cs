@@ -25,44 +25,32 @@ namespace Battleship.Console
 
             Guid? gameId = null;
 
-            if (service.CreateGame(GameName, Player1, Player2))
+            if (!service.CreateGame(GameName, Player1, Player2))
             {
-                gameId = service.FindGameByName(GameName);
-                System.Console.WriteLine("Game successfully created!");
-                System.Console.WriteLine(String.Format("Game id is: {0}", gameId.Value));
-                System.Console.WriteLine();
+                System.Console.WriteLine("By some reason the game was not created!");
+                System.Console.WriteLine("The game is over");
+                return;
             }
 
+            gameId = service.FindGameByName(GameName);
+            System.Console.WriteLine("Game successfully created!");
+            System.Console.WriteLine(String.Format("Game id is: {0}", gameId.Value));
+            System.Console.WriteLine();
+
             DrawField(service, gameId, "Player 1 - create your fleet!");
-
-
-            //var field = new Dictionary<string, bool>();
-            //var sb = new StringBuilder();
-            //sb.Append("  1 2 3 4 5 6 7 8 9 10");
-
-            //for (char c = 'a'; c <= 'j'; c++)
-            //{
-            //    sb.AppendLine();
-            //    sb.AppendFormat("{0} ", char.ToUpper(c));
-            //    for (int i = '0'; i <= '9'; i++)
-            //    {
-            //        field.Add(string.Format("{0}{1}", c, i), false);
-
-            //        sb.AppendFormat("* ", i);
-            //    }
-            //}
-
-            //System.Console.WriteLine(sb.ToString());
-            //System.Console.WriteLine();
-
 
             System.Console.WriteLine("Player 1, please enter coordinates for a ship.");
             string coordinates = System.Console.ReadLine();
 
-            if (service.AddShipToPlayersFleet(gameId.Value, Player1, coordinates))
+            if (!service.AddShipToPlayersFleet(gameId.Value, Player1, coordinates))
             {
-                DrawField(service, gameId, "Ship was successfully created!");
+                System.Console.WriteLine("By some reason the ship was not created!");
+                System.Console.WriteLine("The game is over");
+                return;
             }
+
+            DrawField(service, gameId, "Ship was successfully created!");
+
 
             System.Console.WriteLine("The end!");
             System.Console.ReadKey();
