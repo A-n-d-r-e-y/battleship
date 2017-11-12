@@ -28,14 +28,42 @@ namespace Battleship.Core
             return repository.FindGame(GameName);
         }
 
-        public bool AddShipToPlayersFleet(Guid GameId, string PlayerName, string coordinates)
+        public bool AddShipToPlayersFleet(Guid GameId, string PlayerName, string coordinates, int size)
         {
-            return repository.AddShipToFleet(GameId, PlayerName, coordinates);
+            try
+            {
+                return repository.AddShipToFleet(GameId, PlayerName, coordinates, size);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool CheckShip(Guid GameId, int X, char Y)
         {
             return repository.CheckShip(GameId, X, Y);
+        }
+
+        public Tuple<int, string> SuggestNextShip(Guid GameId, string PlayerName)
+        {
+            int? size = repository.SuggestNextShipSize(GameId, PlayerName);
+            string name = GetShipNameBySize(size.Value);
+
+            return new Tuple<int, string>(size.Value, name);
+        }
+
+        private string GetShipNameBySize(int size)
+        {
+            switch (size)
+            {
+                case 1: return "Submarine";
+                case 2: return "Destroyer";
+                case 3: return "Cruiser";
+                case 4: return "Battleship";
+                case 5: return "Aircraft Carrier";
+                default: return null;
+            }
         }
     }
 }

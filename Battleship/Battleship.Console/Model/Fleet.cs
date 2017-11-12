@@ -13,11 +13,12 @@ namespace Battleship.Console.Model
 
         public Fleet()
         {
-            // (decks count, ships count) 
-            fleetEmptySpaceMap.Add(1, 4);
-            fleetEmptySpaceMap.Add(2, 3);
-            fleetEmptySpaceMap.Add(3, 2);
+            // (ships size, ships count) 
+            fleetEmptySpaceMap.Add(1, 2);
+            fleetEmptySpaceMap.Add(2, 2);
+            fleetEmptySpaceMap.Add(3, 1);
             fleetEmptySpaceMap.Add(4, 1);
+            fleetEmptySpaceMap.Add(5, 1);
         }
 
         public bool AddShip(Ship ship)
@@ -46,6 +47,14 @@ namespace Battleship.Console.Model
                    from ship in list
                    from cell in ship.Cells
                    select cell;
+        }
+
+        public int? SuggestDeckToAdd()
+        {
+            return fleetEmptySpaceMap
+                .Where(p => p.Value > 0)
+                .OrderByDescending(p => p.Key)
+                .FirstOrDefault().Key;
         }
     }
 }

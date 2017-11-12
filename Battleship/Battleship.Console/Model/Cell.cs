@@ -37,12 +37,33 @@ namespace Battleship.Console.Model
 
         public Cell(string coord)
         {
-            if (coord.Length != 2) throw new ArgumentException("coord");
+            if (coord.Length < 2 || coord.Length > 3) throw new ArgumentOutOfRangeException("coord");
 
-            string n1 = coord.Substring(0, 1);
-            string n2 = coord.Substring(1, 1);
+            string n1;
+            string n2;
             int x;
             char y;
+
+            if (coord.Length == 2)
+            {
+                n1 = coord.Substring(0, 1);
+                n2 = coord.Substring(1, 1);
+            }
+            else if (coord.Length == 3)
+            {
+                if (coord.EndsWith("0"))
+                {
+                    n1 = coord.Substring(0, 1);
+                    n2 = coord.Substring(1, 2);
+                }
+                else if (coord.Substring(1, 1) == "0")
+                {
+                    n1 = coord.Substring(0, 2);
+                    n2 = coord.Substring(1, 1);
+                }
+                else throw new ArgumentException("coord");
+            }
+            else throw new ArgumentException("coord");
 
             if (int.TryParse(n1, out x) && char.TryParse(n2, out y))
             {

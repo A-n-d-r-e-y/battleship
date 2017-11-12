@@ -29,6 +29,7 @@ namespace Battleship.Console
             {
                 System.Console.WriteLine("By some reason the game was not created!");
                 System.Console.WriteLine("The game is over");
+                System.Console.ReadKey();
                 return;
             }
 
@@ -39,15 +40,24 @@ namespace Battleship.Console
 
             DrawField(service, gameId, "Player 1 - create your fleet!");
 
-            System.Console.WriteLine("Player 1, please enter coordinates for a ship.");
-            string coordinates = System.Console.ReadLine();
+            var shipInfo = service.SuggestNextShip(gameId.Value, Player1);
+            string coordinates;
 
-            if (!service.AddShipToPlayersFleet(gameId.Value, Player1, coordinates))
+            do
             {
-                System.Console.WriteLine("By some reason the ship was not created!");
-                System.Console.WriteLine("The game is over");
-                return;
+                //System.Console.Clear();
+                System.Console.WriteLine(string.Format("Player 1, please enter coordinates for a {0} size[{1}].", shipInfo.Item2, shipInfo.Item1));
+                coordinates = System.Console.ReadLine();
             }
+            while (!service.AddShipToPlayersFleet(gameId.Value, Player1, coordinates, shipInfo.Item1));
+
+            //if (!service.AddShipToPlayersFleet(gameId.Value, Player1, coordinates, shipInfo.Item1))
+            //{
+            //    System.Console.WriteLine("By some reason the ship was not created!");
+            //    System.Console.WriteLine("The game is over");
+            //    System.Console.ReadKey();
+            //    return;
+            //}
 
             DrawField(service, gameId, "Ship was successfully created!");
 

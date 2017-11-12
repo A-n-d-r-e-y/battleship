@@ -43,11 +43,15 @@ namespace Battleship.Console
             return false;
         }
 
-        public override bool AddShipToFleet(Guid GameId, string PlayerName, string Coordinates)
+        public override bool AddShipToFleet(Guid GameId, string PlayerName, string Coordinates, int Size)
         {
+            if (Coordinates == null) throw new ArgumentNullException("Coordinates");
+
             var cells =
                 from coord in Coordinates.Split(';')
                 select new Cell(coord);
+
+            if (cells.Count() != Size) throw new ArgumentException("Size");
 
             if (GameId == this.GameId.Value && PlayerName == this.GuestPlayerName)
             {
@@ -75,6 +79,19 @@ namespace Battleship.Console
             }
 
             return false;
+        }
+
+        public override int? SuggestNextShipSize(Guid GameId, string PlayerName)
+        {
+            if (GameId == this.GameId.Value && PlayerName == this.GuestPlayerName)
+            {
+                return GuestPlayersFleet.SuggestDeckToAdd();
+            }
+            else if (GameId == this.GameId.Value && PlayerName == this.HostPlayerName)
+            {
+                return HostPlayersFleet.SuggestDeckToAdd();
+            }
+            else return null;
         }
     }
 }
