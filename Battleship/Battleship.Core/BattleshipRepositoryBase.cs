@@ -14,5 +14,6 @@ namespace Battleship.Core
         public abstract bool AddShipToFleet(Guid gameId, string playerName, string coordinates, int size);
         public abstract bool CheckShip(Guid gameId, int x, char y);
         public abstract int? SuggestNextShipSize(Guid gameId, string playerName);
+        public abstract bool? IsFleetFull(Guid gameId, string playerName);
     }
 }

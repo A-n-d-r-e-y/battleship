@@ -48,7 +48,7 @@ namespace Battleship.Console
             if (Coordinates == null) throw new ArgumentNullException("Coordinates");
 
             var cells =
-                from coord in Coordinates.Split(';')
+                from coord in Coordinates.Split(new char[] { ';', ' ', '.', '-', ',', '!', '/', '\\', '|' })
                 select new Cell(coord);
 
             if (cells.Count() != Size) throw new ArgumentException("Size");
@@ -90,6 +90,19 @@ namespace Battleship.Console
             else if (GameId == this.GameId.Value && PlayerName == this.HostPlayerName)
             {
                 return HostPlayersFleet.SuggestDeckToAdd();
+            }
+            else return null;
+        }
+
+        public override bool? IsFleetFull(Guid gameId, string playerName)
+        {
+            if (GameId == this.GameId.Value && playerName == this.GuestPlayerName)
+            {
+                return GuestPlayersFleet.IsFleetFull;
+            }
+            else if (GameId == this.GameId.Value && playerName == this.HostPlayerName)
+            {
+                return HostPlayersFleet.IsFleetFull;
             }
             else return null;
         }

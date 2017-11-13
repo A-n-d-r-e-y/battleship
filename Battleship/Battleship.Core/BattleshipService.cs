@@ -53,6 +53,11 @@ namespace Battleship.Core
             return new Tuple<int, string>(size.Value, name);
         }
 
+        public bool? IsFleetFull(Guid gameId, string playerName)
+        {
+            return repository.IsFleetFull(gameId, playerName);
+        }
+
         private string GetShipNameBySize(int size)
         {
             switch (size)

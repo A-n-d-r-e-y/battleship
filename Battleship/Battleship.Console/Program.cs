@@ -38,32 +38,33 @@ namespace Battleship.Console
             System.Console.WriteLine(String.Format("Game id is: {0}", gameId.Value));
             System.Console.WriteLine();
 
-            DrawField(service, gameId, "Player 1 - create your fleet!");
+            DrawField(service, gameId, string.Format("{0} - create your fleet!", Player1));
+            CreateFleetForPlayer(service, Player1, gameId);
 
-            var shipInfo = service.SuggestNextShip(gameId.Value, Player1);
-            string coordinates;
-
-            do
-            {
-                //System.Console.Clear();
-                System.Console.WriteLine(string.Format("Player 1, please enter coordinates for a {0} size[{1}].", shipInfo.Item2, shipInfo.Item1));
-                coordinates = System.Console.ReadLine();
-            }
-            while (!service.AddShipToPlayersFleet(gameId.Value, Player1, coordinates, shipInfo.Item1));
-
-            //if (!service.AddShipToPlayersFleet(gameId.Value, Player1, coordinates, shipInfo.Item1))
-            //{
-            //    System.Console.WriteLine("By some reason the ship was not created!");
-            //    System.Console.WriteLine("The game is over");
-            //    System.Console.ReadKey();
-            //    return;
-            //}
-
-            DrawField(service, gameId, "Ship was successfully created!");
-
+            DrawField(service, gameId, string.Format("{0} - create your fleet!", Player2));
+            CreateFleetForPlayer(service, Player2, gameId);
 
             System.Console.WriteLine("The end!");
             System.Console.ReadKey();
+        }
+
+        private static void CreateFleetForPlayer(BattleshipService service, string playerName, Guid? gameId)
+        {
+            while (!service.IsFleetFull(gameId.Value, playerName).Value)
+            {
+                var shipInfo = service.SuggestNextShip(gameId.Value, playerName);
+                string coordinates;
+
+                do
+                {
+                    //System.Console.Clear();
+                    System.Console.WriteLine(string.Format("{2}, please enter coordinates for a {0} size[{1}].", shipInfo.Item2, shipInfo.Item1, playerName));
+                    coordinates = System.Console.ReadLine();
+                }
+                while (!service.AddShipToPlayersFleet(gameId.Value, playerName, coordinates, shipInfo.Item1));
+
+                DrawField(service, gameId, "Ship was successfully created!");
+            }
         }
 
         private static void DrawField(BattleshipService service, Guid? gameId, string caption)

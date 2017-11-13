@@ -21,6 +21,11 @@ namespace Battleship.Console.Model
             fleetEmptySpaceMap.Add(5, 1);
         }
 
+        public bool IsFleetFull
+        {
+            get { return fleetEmptySpaceMap.Where(p => p.Value > 0).Count() == 0; }
+        }
+
         public bool AddShip(Ship ship)
         {
             if (fleetEmptySpaceMap[ship.Length] > 0)
