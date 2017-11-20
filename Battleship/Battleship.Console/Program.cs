@@ -23,6 +23,7 @@ namespace Battleship.Console
             System.Console.WriteLine("Please, enter a name for the player two:");
             string Player2 = System.Console.ReadLine();
 
+
             Guid? gameId = null;
 
             if (!service.CreateGame(GameName, Player1, Player2))
@@ -38,11 +39,37 @@ namespace Battleship.Console
             System.Console.WriteLine(String.Format("Game id is: {0}", gameId.Value));
             System.Console.WriteLine();
 
-            DrawField(service, gameId, string.Format("{0} - create your fleet!", Player1));
-            CreateFleetForPlayer(service, Player1, gameId);
+            // creating fleets
+            foreach (var player in new string[] { Player1, Player2 })
+            {
+                DrawField(service, gameId, string.Format("{0} - create your fleet!", player));
+                CreateFleetForPlayer(service, player, gameId);
+            }
 
-            DrawField(service, gameId, string.Format("{0} - create your fleet!", Player2));
-            CreateFleetForPlayer(service, Player2, gameId);
+            // the game cycle
+            while (!service.IsGameEnded)
+            {
+                // rolling dices
+
+                // the winner takes the first step
+                string player = service.GetNextPlayerToTurn(gameId.Value);
+                System.Console.WriteLine(string.Format("{0} - it's your turn!", player));
+                Tuple<bool, string> shotInfo;
+
+                do
+                {
+                    System.Console.WriteLine(string.Format("{0}, please enter coordinates for a shot!", player));
+                    string coordinates = System.Console.ReadLine();
+                    shotInfo = service.TakeTurn(gameId, player, coordinates);
+
+                    if (shotInfo == null) continue;
+
+                    DrawField(service, gameId, shotInfo.Item2);
+                }
+                while (shotInfo.Item1);
+
+                
+            }
 
             System.Console.WriteLine("The end!");
             System.Console.ReadKey();
