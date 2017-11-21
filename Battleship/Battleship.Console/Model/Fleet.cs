@@ -26,6 +26,11 @@ namespace Battleship.Console.Model
             get { return fleetEmptySpaceMap.Where(p => p.Value > 0).Count() == 0; }
         }
 
+        public bool IsFleetEmpty
+        {
+            get { return GetShips().Count() == 0; }
+        }
+
         public bool AddShip(Ship ship)
         {
             if (fleetEmptySpaceMap[ship.Length] > 0)
@@ -48,10 +53,16 @@ namespace Battleship.Console.Model
 
         public IEnumerable<Cell> GetShipsCells()
         {
-            return from list in fleet.Values
-                   from ship in list
+            return from ship in GetShips()
                    from cell in ship.Cells
                    select cell;
+        }
+
+        private IEnumerable<Ship> GetShips()
+        {
+            return from list in fleet.Values
+                   from ship in list
+                   select ship;
         }
 
         public int? SuggestDeckToAdd()

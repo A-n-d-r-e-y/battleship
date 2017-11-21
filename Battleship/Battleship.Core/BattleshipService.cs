@@ -10,6 +10,11 @@ namespace Battleship.Core
     {
         private readonly BattleshipRepositoryBase repository;
 
+        public bool IsGameEnded(Guid GameId)
+        {
+            return repository.IsGameOver(GameId).Value;
+        }
+
         public BattleshipService(BattleshipRepositoryBase repository)
         {
             if (repository == null) throw new ArgumentNullException("repository");
@@ -40,9 +45,9 @@ namespace Battleship.Core
             }
         }
 
-        public bool CheckShip(Guid GameId, int X, char Y)
+        public bool? CheckCell(Guid GameId, int X, char Y)
         {
-            return repository.CheckShip(GameId, X, Y);
+            return repository.CheckCell(GameId, X, Y);
         }
 
         public Tuple<int, string> SuggestNextShip(Guid GameId, string PlayerName)
@@ -56,6 +61,16 @@ namespace Battleship.Core
         public bool? IsFleetFull(Guid gameId, string playerName)
         {
             return repository.IsFleetFull(gameId, playerName);
+        }
+
+        public Tuple<bool, string> TakeTurn(Guid gameId, string player, string coordinates)
+        {
+            return repository.TakeTurn(gameId, player, coordinates);
+        }
+
+        public string GetNextPlayerToTurn(Guid gameId, string currentPlayer)
+        {
+            return repository.GetNextPlayer(gameId, currentPlayer);
         }
 
         private string GetShipNameBySize(int size)

@@ -46,29 +46,31 @@ namespace Battleship.Console
                 CreateFleetForPlayer(service, player, gameId);
             }
 
-            // the game cycle
-            while (!service.IsGameEnded)
-            {
-                // rolling dices
+            // rolling dices
+            // the winner takes the first step
+            string currentPlayer = Player1;
 
-                // the winner takes the first step
-                string player = service.GetNextPlayerToTurn(gameId.Value);
-                System.Console.WriteLine(string.Format("{0} - it's your turn!", player));
+            // the game cycle
+            while (!service.IsGameEnded(gameId.Value))
+            {
+
+                System.Console.WriteLine(string.Format("{0} - it's your turn!", currentPlayer));
                 Tuple<bool, string> shotInfo;
 
                 do
                 {
-                    System.Console.WriteLine(string.Format("{0}, please enter coordinates for a shot!", player));
+                    System.Console.WriteLine(string.Format("{0}, please enter coordinates for a shot!", currentPlayer));
                     string coordinates = System.Console.ReadLine();
-                    shotInfo = service.TakeTurn(gameId, player, coordinates);
+                    shotInfo = service.TakeTurn(gameId.Value, currentPlayer, coordinates);
 
                     if (shotInfo == null) continue;
 
                     DrawField(service, gameId, shotInfo.Item2);
                 }
-                while (shotInfo.Item1);
+                while (shotInfo.Item1); // while you miss
 
-                
+                // next player
+                currentPlayer = service.GetNextPlayerToTurn(gameId.Value, currentPlayer);
             }
 
             System.Console.WriteLine("The end!");
@@ -110,9 +112,11 @@ namespace Battleship.Console
 
                 for (int i = 1; i <= 10; i++)
                 {
-                    sb.AppendFormat(service.CheckShip(gameId.Value, i, c) ? "+ " : "* ", i);
-                }
-            }
+                    bool? result = service.CheckCell(gameId.Value, i, c);
+                    if (result == null) sb.Append(" *");
+                    sb.Append(result.Value ? "+ " : "@ ");
+        }
+    }
 
             sb.AppendLine();
             System.Console.WriteLine(sb.ToString());

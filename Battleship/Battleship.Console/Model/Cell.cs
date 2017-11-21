@@ -8,6 +8,8 @@ namespace Battleship.Console.Model
 {
     public class Cell
     {
+        public bool IsDestroyed { get; set; }
+        public Ship Parent { get; set; }
         public class CellEqualityComparer : IEqualityComparer<Cell>
         {
             public bool Equals(Cell x, Cell y)
@@ -34,6 +36,13 @@ namespace Battleship.Console.Model
         }
 
         //public Cell(string Coord) : this(int.Parse(Coord.Substring(0, 1)), char.Parse(Coord.Substring(1, 1))) { }
+
+        public static IEnumerable<Cell> Parse(string coordinates)
+        {
+            return
+                from coord in coordinates.Split(new char[] { ';', ' ', '.', '-', ',', '!', '/', '\\', '|' })
+                select new Cell(coord);
+        }
 
         public Cell(string coord)
         {

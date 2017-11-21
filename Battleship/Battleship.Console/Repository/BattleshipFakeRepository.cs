@@ -47,9 +47,7 @@ namespace Battleship.Console
         {
             if (Coordinates == null) throw new ArgumentNullException("Coordinates");
 
-            var cells =
-                from coord in Coordinates.Split(new char[] { ';', ' ', '.', '-', ',', '!', '/', '\\', '|' })
-                select new Cell(coord);
+            var cells = Cell.Parse(Coordinates);
 
             if (cells.Count() != Size) throw new ArgumentException("Size");
 
@@ -66,19 +64,22 @@ namespace Battleship.Console
             return false;
         }
 
-        public override bool CheckShip(Guid GameId, int X, char Y)
+        public override bool? CheckCell(Guid GameId, int X, char Y)
         {
-            var cell = new Cell(X, Y);
+            var check = new Cell(X, Y);
             var comparer = new Cell.CellEqualityComparer();
 
             if (GameId == this.GameId.Value)
             {
-                return GuestPlayersFleet.GetShipsCells()
+                var cell = GuestPlayersFleet.GetShipsCells()
                     .Union(HostPlayersFleet.GetShipsCells())
-                    .Contains<Cell>(cell, comparer);
+                    .Where(c => c.Equals(check))
+                    .FirstOrDefault();
+
+                return cell == null ? null : new Nullable<bool>(cell.IsDestroyed);
             }
 
-            return false;
+            return null;
         }
 
         public override int? SuggestNextShipSize(Guid GameId, string PlayerName)
@@ -106,5 +107,66 @@ namespace Battleship.Console
             }
             else return null;
         }
-    }
+
+        public override bool? IsGameOver(Guid gameId)
+        {
+            if (GameId == this.GameId.Value)
+            {
+                return GuestPlayersFleet.IsFleetEmpty || HostPlayersFleet.IsFleetEmpty;
+            }
+            else return null;
+        }
+
+        private Fleet GetOppositePlayersFleet(Guid gameId, string currentPlayer)
+        {
+            if (gameId == this.GameId.Value)
+            {
+                if (currentPlayer == this.GuestPlayerName) return this.HostPlayersFleet;
+                if (currentPlayer == this.HostPlayerName) return this.GuestPlayersFleet;
+            }
+
+            return null;
+        }
+
+        public override Tuple<bool, string> TakeTurn(Guid gameId, string playerName, string coordinates)
+        {
+            Cell shot = new Cell(coordinates);
+
+            if (gameId == this.GameId.Value)
+            {
+                var fleet = GetOppositePlayersFleet(gameId, playerName);
+                if (fleet == null) return null;
+
+                var cell = (from c in fleet.GetShipsCells()
+                            where c.Equals(shot) && !c.IsDestroyed
+                            select c).FirstOrDefault();
+
+                if (cell != null)
+                {
+                    cell.IsDestroyed = true;
+                    if (cell.Parent.IsDestroyed) return new Tuple<bool, string>(true, "Ship is destroyed!");
+                    else return new Tuple<bool, string>(true, "Hit!");
+
+                }
+
+                return new Tuple<bool, string>(false, "Miss!");
+            }
+
+            return null;
+        }
+
+        public override string GetNextPlayer(Guid gameId, string currentPlayer)
+        {
+            if (gameId == this.GameId.Value && currentPlayer == this.GuestPlayerName)
+            {
+                return this.HostPlayerName;
+            }
+
+            if (gameId == this.GameId.Value && currentPlayer == this.HostPlayerName)
+            {
+                return this.GuestPlayerName;
+            }
+
+            return null;
+        }
 }
