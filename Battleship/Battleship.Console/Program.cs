@@ -42,7 +42,7 @@ namespace Battleship.Console
             // creating fleets
             foreach (var player in new string[] { Player1, Player2 })
             {
-                DrawField(service, gameId, string.Format("{0} - create your fleet!", player));
+                DrawField(service, gameId, string.Format("{0} - create your fleet!", player)); // <--- add player parameter!!!
                 CreateFleetForPlayer(service, player, gameId);
             }
 
@@ -114,9 +114,9 @@ namespace Battleship.Console
                 {
                     bool? result = service.CheckCell(gameId.Value, i, c);
                     if (result == null) sb.Append(" *");
-                    sb.Append(result.Value ? "+ " : "@ ");
-        }
-    }
+                    else sb.Append(result.Value ? " +" : " @");
+                }
+            }
 
             sb.AppendLine();
             System.Console.WriteLine(sb.ToString());

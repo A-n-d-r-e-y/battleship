@@ -76,7 +76,7 @@ namespace Battleship.Console
                     .Where(c => c.Equals(check))
                     .FirstOrDefault();
 
-                return cell == null ? null : new Nullable<bool>(cell.IsDestroyed);
+                return cell == null ? null : new Nullable<bool>(!cell.IsDestroyed);
             }
 
             return null;
@@ -169,4 +169,5 @@ namespace Battleship.Console
 
             return null;
         }
+    }
 }

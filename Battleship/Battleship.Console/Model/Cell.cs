@@ -33,6 +33,8 @@ namespace Battleship.Console.Model
 
             this.X = X;
             this.Y = Y;
+
+            this.IsDestroyed = false;
         }
 
         //public Cell(string Coord) : this(int.Parse(Coord.Substring(0, 1)), char.Parse(Coord.Substring(1, 1))) { }
@@ -90,6 +92,11 @@ namespace Battleship.Console.Model
         public override string ToString()
         {
             return string.Format("{0}{1}", X, Y);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.ToString() == obj.ToString();
         }
     }
 }
