@@ -42,7 +42,7 @@ namespace Battleship.Console
             // creating fleets
             foreach (var player in new string[] { Player1, Player2 })
             {
-                DrawField(service, gameId, string.Format("{0} - create your fleet!", player)); // <--- add player parameter!!!
+                DrawField(service, gameId, player, string.Format("{0} - create your fleet!", player)); // <--- add player parameter!!!
                 CreateFleetForPlayer(service, player, gameId);
             }
 
@@ -65,7 +65,7 @@ namespace Battleship.Console
 
                     if (shotInfo == null) continue;
 
-                    DrawField(service, gameId, shotInfo.Item2);
+                    DrawField(service, gameId, currentPlayer, shotInfo.Item2);
                 }
                 while (shotInfo.Item1); // while you miss
 
@@ -92,11 +92,11 @@ namespace Battleship.Console
                 }
                 while (!service.AddShipToPlayersFleet(gameId.Value, playerName, coordinates, shipInfo.Item1));
 
-                DrawField(service, gameId, "Ship was successfully created!");
+                DrawField(service, gameId, playerName, "Ship was successfully created!");
             }
         }
 
-        private static void DrawField(BattleshipService service, Guid? gameId, string caption)
+        private static void DrawField(BattleshipService service, Guid? gameId, string player, string caption)
         {
             var sb = new StringBuilder()
                 .AppendLine()
@@ -112,9 +112,24 @@ namespace Battleship.Console
 
                 for (int i = 1; i <= 10; i++)
                 {
-                    bool? result = service.CheckCell(gameId.Value, i, c);
-                    if (result == null) sb.Append(" *");
-                    else sb.Append(result.Value ? " +" : " @");
+                    var result = service.CheckCell(gameId.Value, player, i, c);
+
+                    switch (result)
+                    {
+                        case CellState.Empty:
+                            break;
+                        case CellState.Destroyed:
+                            break;
+                        case CellState.HasShip:
+                            break;
+                        case CellState.Unknown:
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (result == null) sb.Append("* ");
+                    else sb.Append(result.Value ? "+ " : "@ ");
                 }
             }
 

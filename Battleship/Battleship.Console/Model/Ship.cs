@@ -8,7 +8,7 @@ namespace Battleship.Console.Model
 {
     public class Ship
     {
-        public IEnumerable<Cell> Cells;
+        public List<Cell> Cells { get; private set; }
         public bool IsDestroyed
         {
             get
@@ -23,12 +23,12 @@ namespace Battleship.Console.Model
         {
             if (Cells == null) throw new ArgumentNullException("Cells");
 
-            foreach (var cell in Cells)
+            this.Cells = new List<Cell>(Cells);
+
+            foreach (var cell in this.Cells)
             {
                 cell.Parent = this;
             }
-
-            this.Cells = Cells;
         }
 
         public int Length

@@ -45,9 +45,9 @@ namespace Battleship.Core
             }
         }
 
-        public bool? CheckCell(Guid GameId, int X, char Y)
+        public CellState CheckCell(Guid GameId, string playerName, int X, char Y)
         {
-            return repository.CheckCell(GameId, X, Y);
+            return repository.CheckCell(GameId, playerName, X, Y);
         }
 
         public Tuple<int, string> SuggestNextShip(Guid GameId, string PlayerName)

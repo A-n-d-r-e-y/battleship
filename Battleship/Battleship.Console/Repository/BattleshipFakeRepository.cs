@@ -16,6 +16,8 @@ namespace Battleship.Console
         private string GuestPlayerName;
         private Fleet HostPlayersFleet;
         private Fleet GuestPlayersFleet;
+        private List<Cell> HostMissedShots;
+        private List<Cell> GuestMissedShots;
 
         public override Guid CreateGame(string GameName, string HostPlayerName)
         {
@@ -64,22 +66,24 @@ namespace Battleship.Console
             return false;
         }
 
-        public override bool? CheckCell(Guid GameId, int X, char Y)
+        public override CellState CheckCell(Guid GameId, string playerName, int X, char Y)
         {
             var check = new Cell(X, Y);
             var comparer = new Cell.CellEqualityComparer();
+            var fleet = playerName == this.GuestPlayerName ? GuestPlayersFleet : HostPlayersFleet;
 
             if (GameId == this.GameId.Value)
             {
-                var cell = GuestPlayersFleet.GetShipsCells()
-                    .Union(HostPlayersFleet.GetShipsCells())
+                var cell = fleet
+                    .GetShipsCells()
                     .Where(c => c.Equals(check))
                     .FirstOrDefault();
 
-                return cell == null ? null : new Nullable<bool>(!cell.IsDestroyed);
+                if (cell == null) return CellState.Empty;
+                return cell.IsDestroyed ? CellState.Destroyed : CellState.HasShip;
             }
 
-            return null;
+            return CellState.Unknown;
         }
 
         public override int? SuggestNextShipSize(Guid GameId, string PlayerName)
@@ -138,7 +142,7 @@ namespace Battleship.Console
                 if (fleet == null) return null;
 
                 var cell = (from c in fleet.GetShipsCells()
-                            where c.Equals(shot) && !c.IsDestroyed
+                            where c.Equals(shot)
                             select c).FirstOrDefault();
 
                 if (cell != null)
