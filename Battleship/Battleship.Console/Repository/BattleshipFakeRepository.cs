@@ -19,15 +19,19 @@ namespace Battleship.Console
         private List<Cell> HostMissedShots;
         private List<Cell> GuestMissedShots;
 
-        public override Guid CreateGame(string GameName, string HostPlayerName)
+        public BattleshipFakeRepository()
         {
             this.GameId = new Nullable<Guid>(Guid.NewGuid());
-            this.GameName = GameName;
-            this.HostPlayerName = HostPlayerName;
             this.HostPlayersFleet = new Fleet();
             this.GuestPlayersFleet = new Fleet();
             this.HostMissedShots = new List<Cell>();
             this.GuestMissedShots = new List<Cell>();
+        }
+
+        public override Guid CreateGame(string GameName, string HostPlayerName)
+        {         
+            this.GameName = GameName;
+            this.HostPlayerName = HostPlayerName;
 
             return this.GameId.Value;
         }

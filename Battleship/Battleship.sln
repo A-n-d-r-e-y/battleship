@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship.Core", "Battlesh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship.Console", "Battleship.Console\Battleship.Console.csproj", "{5D535D89-56AE-4DB1-88F8-3B8250ECB197}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship.UnitTests", "Battleship.UnitTests\Battleship.UnitTests.csproj", "{3547FB54-30C5-4266-BD5C-2B3C69119D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{5D535D89-56AE-4DB1-88F8-3B8250ECB197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D535D89-56AE-4DB1-88F8-3B8250ECB197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D535D89-56AE-4DB1-88F8-3B8250ECB197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3547FB54-30C5-4266-BD5C-2B3C69119D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3547FB54-30C5-4266-BD5C-2B3C69119D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3547FB54-30C5-4266-BD5C-2B3C69119D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3547FB54-30C5-4266-BD5C-2B3C69119D16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
