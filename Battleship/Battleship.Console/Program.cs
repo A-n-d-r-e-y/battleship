@@ -55,7 +55,8 @@ namespace Battleship.Console
             {
 
                 System.Console.WriteLine(string.Format("{0} - it's your turn!", currentPlayer));
-                Tuple<bool, string> shotInfo;
+                Info<ShotResult> shotInfo;
+                var misses = new[] { ShotResult.Miss, ShotResult.SecondHit };
 
                 do
                 {
@@ -65,9 +66,9 @@ namespace Battleship.Console
 
                     if (shotInfo == null) continue;
 
-                    DrawField(service, gameId, currentPlayer, shotInfo.Item2);
+                    DrawField(service, gameId, currentPlayer, shotInfo.InfoString);
                 }
-                while (shotInfo.Item1); // while you miss
+                while (misses.Contains(shotInfo.Value)); // while you miss
 
                 // next player
                 currentPlayer = service.GetNextPlayerToTurn(gameId.Value, currentPlayer);
@@ -117,19 +118,23 @@ namespace Battleship.Console
                     switch (result)
                     {
                         case CellState.Empty:
+                            sb.Append("* ");
                             break;
                         case CellState.Destroyed:
+                            sb.Append("# ");
                             break;
                         case CellState.HasShip:
+                            sb.Append("+ ");
                             break;
                         case CellState.Unknown:
+                            sb.Append("? ");
+                            break;
+                        case CellState.HasMiss:
+                            sb.Append("@ ");
                             break;
                         default:
                             break;
                     }
-
-                    if (result == null) sb.Append("* ");
-                    else sb.Append(result.Value ? "+ " : "@ ");
                 }
             }
 

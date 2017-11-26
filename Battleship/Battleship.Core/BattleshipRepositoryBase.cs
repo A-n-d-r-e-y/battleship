@@ -8,12 +8,12 @@ namespace Battleship.Core
 {
     public enum CellState
     {
-        Empty, Destroyed, HasShip, Unknown
+        Empty, Destroyed, HasShip, HasMiss, Unknown
     }
 
     public enum ShotResult
     {
-        Miss, Hit, SecondHit, Unknown
+        Miss, Hit, SecondHit, ShipDestroyed
     }
 
     public class Info<T>

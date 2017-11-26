@@ -63,7 +63,7 @@ namespace Battleship.Core
             return repository.IsFleetFull(gameId, playerName);
         }
 
-        public Tuple<bool, string> TakeTurn(Guid gameId, string player, string coordinates)
+        public Info<ShotResult> TakeTurn(Guid gameId, string player, string coordinates)
         {
             return repository.TakeTurn(gameId, player, coordinates);
         }

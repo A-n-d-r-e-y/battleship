@@ -26,6 +26,8 @@ namespace Battleship.Console
             this.HostPlayerName = HostPlayerName;
             this.HostPlayersFleet = new Fleet();
             this.GuestPlayersFleet = new Fleet();
+            this.HostMissedShots = new List<Cell>();
+            this.GuestMissedShots = new List<Cell>();
 
             return this.GameId.Value;
         }
@@ -71,6 +73,7 @@ namespace Battleship.Console
             var check = new Cell(X, Y);
             var comparer = new Cell.CellEqualityComparer();
             var fleet = playerName == this.GuestPlayerName ? GuestPlayersFleet : HostPlayersFleet;
+            var misses = playerName == this.GuestPlayerName ? GuestMissedShots : HostMissedShots;
 
             if (GameId == this.GameId.Value)
             {
@@ -79,8 +82,18 @@ namespace Battleship.Console
                     .Where(c => c.Equals(check))
                     .FirstOrDefault();
 
-                if (cell == null) return CellState.Empty;
-                return cell.IsDestroyed ? CellState.Destroyed : CellState.HasShip;
+                if (cell == null)
+                {
+                    if (misses != null && misses.Where(m => m.Equals(check)).Count() > 0)
+                    {
+                        return CellState.HasMiss;
+                    }
+                    else return CellState.Empty;
+                }
+                else
+                {
+                    return cell.IsDestroyed ? CellState.Destroyed : CellState.HasShip;
+                }
             }
 
             return CellState.Unknown;
@@ -132,7 +145,7 @@ namespace Battleship.Console
             return null;
         }
 
-        public override Tuple<bool, string> TakeTurn(Guid gameId, string playerName, string coordinates)
+        public override Info<ShotResult> TakeTurn(Guid gameId, string playerName, string coordinates)
         {
             Cell shot = new Cell(coordinates);
 
@@ -145,15 +158,26 @@ namespace Battleship.Console
                             where c.Equals(shot)
                             select c).FirstOrDefault();
 
-                if (cell != null)
+                // miss
+                if (cell == null)
                 {
-                    cell.IsDestroyed = true;
-                    if (cell.Parent.IsDestroyed) return new Tuple<bool, string>(true, "Ship is destroyed!");
-                    else return new Tuple<bool, string>(true, "Hit!");
-
+                    if (playerName == this.GuestPlayerName) this.GuestMissedShots.Add(shot);
+                    if (playerName == this.HostPlayerName) this.HostMissedShots.Add(shot);
+                    return new Info<ShotResult>(ShotResult.Miss, "Miss");
+                }
+                // hit, ship destruction or second hit
+                else
+                {
+                    if (cell.IsDestroyed) return new Info<ShotResult>(ShotResult.SecondHit, "You hit the same place twice!");
+                    else
+                    {
+                        cell.IsDestroyed = true;
+                        if (cell.Parent.IsDestroyed) return new Info<ShotResult>(ShotResult.ShipDestroyed, "Ship is destroyed!");
+                        else return new Info<ShotResult>(ShotResult.Hit, "Hit!");
+                    }
                 }
 
-                return new Tuple<bool, string>(false, "Miss!");
+                //return new Info<ShotResult>(ShotResult.Unknown, "Something went wrong!");
             }
 
             return null;
