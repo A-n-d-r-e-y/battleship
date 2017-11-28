@@ -73,6 +73,7 @@ namespace Battleship.Core
             return repository.GetNextPlayer(gameId, currentPlayer);
         }
 
+        //TODO move it to the repository base
         private string GetShipNameBySize(int size)
         {
             switch (size)

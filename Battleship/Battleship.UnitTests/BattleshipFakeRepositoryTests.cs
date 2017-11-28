@@ -19,7 +19,7 @@ namespace Battleship.UnitTests
         private string Player1 = "player1";
         private string Player2 = "player2";
 
-        private Dictionary<int, string> firstPlayerFleet = new Dictionary<int, string>(7);
+        private Dictionary<int, string> FIRST_PLAYER_FLEET = new Dictionary<int, string>(7);
 
         [TestInitialize]
         public void InitializeTests()
@@ -32,13 +32,13 @@ namespace Battleship.UnitTests
 
         private void CreateFirstPlayerFleet()
         {
-            firstPlayerFleet.Add(1, "b2,b3,b4,b5,b6");
-            firstPlayerFleet.Add(2, "d4,d5,d6,d7");
-            firstPlayerFleet.Add(3, "f1,f2,f3");
-            firstPlayerFleet.Add(4, "a8,b8");
-            firstPlayerFleet.Add(5, "d10,e10");
-            firstPlayerFleet.Add(6, "g9");
-            firstPlayerFleet.Add(7, "j7");
+            FIRST_PLAYER_FLEET.Add(1, "b2,b3,b4,b5,b6");
+            FIRST_PLAYER_FLEET.Add(2, "d4,d5,d6,d7");
+            FIRST_PLAYER_FLEET.Add(3, "f1,f2,f3");
+            FIRST_PLAYER_FLEET.Add(4, "a8,b8");
+            FIRST_PLAYER_FLEET.Add(5, "d10,e10");
+            FIRST_PLAYER_FLEET.Add(6, "g9");
+            FIRST_PLAYER_FLEET.Add(7, "j7");
         }
 
         private bool Contains(Dictionary<int, string> dict, char x, int y)
@@ -78,16 +78,70 @@ namespace Battleship.UnitTests
             Debug.WriteLine(sb.ToString());
         }
 
+        private static void DrawField(BattleshipService service, Guid? gameId, string player, string caption)
+        {
+            var sb = new StringBuilder()
+                .AppendLine()
+                .AppendLine(caption)
+                .AppendLine()
+                .Append("  1 2 3 4 5 6 7 8 9 10");
+
+            for (char c = 'a'; c <= 'j'; c++)
+            {
+                sb
+                    .AppendLine()
+                    .AppendFormat("{0} ", char.ToUpper(c));
+
+                for (int i = 1; i <= 10; i++)
+                {
+                    var result = service.CheckCell(gameId.Value, player, i, c);
+
+                    switch (result)
+                    {
+                        case CellState.Empty:
+                            sb.Append("* ");
+                            break;
+                        case CellState.Destroyed:
+                            sb.Append("# ");
+                            break;
+                        case CellState.HasShip:
+                            sb.Append("+ ");
+                            break;
+                        case CellState.Unknown:
+                            sb.Append("? ");
+                            break;
+                        case CellState.HasMiss:
+                            sb.Append("@ ");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            sb.AppendLine();
+            Debug.WriteLine(sb.ToString());
+        }
+
         [TestMethod]
         public void NormalGameScenarioTest()
         {
             bool isGameCreated = service.CreateGame(GameName, Player1, Player2);
             Assert.IsTrue(isGameCreated);
 
-            var gameId = service.FindGameByName(GameName);
+            var gameId = service.FindGameByName(GameName).Value;
             Assert.IsNotNull(gameId);
 
-            DrawFleet(firstPlayerFleet);
+            Assert.IsFalse(service.IsFleetFull(gameId, Player1).Value);
+
+            service.SuggestNextShip(gameId, Player1);
+
+            Assert.IsFalse(service.IsGameEnded(gameId));
+
+            Assert.IsTrue(service.TakeTurn(gameId, Player2, "b3").Value == ShotResult.Hit);
+
+            //DrawField
+            //DrawFleet(FIRST_PLAYER_FLEET);
         }
 
         //private void CreateFleetForPlayer(BattleshipService service, string playerName, Guid? gameId)
