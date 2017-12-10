@@ -134,11 +134,21 @@ namespace Battleship.UnitTests
 
             Assert.IsFalse(service.IsFleetFull(gameId, Player1).Value);
 
-            service.SuggestNextShipToAdd(gameId, Player1);
+            var shipInfo = service.SuggestNextShipToAdd(gameId, Player1);
+            Assert.AreEqual<ShipType>(ShipType.AircraftCarrier, shipInfo.ShipType);
+            Assert.AreEqual<int>(5, shipInfo.ShipSize);
 
-            Assert.IsFalse(service.IsGameEnded(gameId));
+            bool isShipAdded = service.AddShipToPlayersFleet(gameId, Player1, "a1,a2,a3,a4", shipInfo);
+            Assert.IsFalse(isShipAdded, "Ship size by coordinates doesn't match shipInfo.Size");
 
-            Assert.IsTrue(service.TakeTurn(gameId, Player2, "b3").Value == ShotResult.Hit);
+            isShipAdded = service.AddShipToPlayersFleet(gameId, Player1, "a1,a2,a3,a4,a5", shipInfo);
+            Assert.IsTrue(isShipAdded);
+
+            Assert.IsTrue(
+                service.IsGameEnded(gameId), 
+                "in fact it shouldn't be started yet, because second player don't have any ships in his/her fleet");
+
+            Assert.IsTrue(service.TakeTurn(gameId, Player2, "b3").Value == ShotResult.Miss, "so far there are no ships on this coordinate");
 
             //DrawField
             //DrawFleet(FIRST_PLAYER_FLEET);
