@@ -134,7 +134,7 @@ namespace Battleship.UnitTests
 
             Assert.IsFalse(service.IsFleetFull(gameId, Player1).Value);
 
-            service.SuggestNextShip(gameId, Player1);
+            service.SuggestNextShipToAdd(gameId, Player1);
 
             Assert.IsFalse(service.IsGameEnded(gameId));
 

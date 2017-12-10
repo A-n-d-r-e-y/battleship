@@ -8,6 +8,7 @@ namespace Battleship.Console.Model
 {
     public class Ship
     {
+
         public List<Cell> Cells { get; private set; }
         public bool IsDestroyed
         {

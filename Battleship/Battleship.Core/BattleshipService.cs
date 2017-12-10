@@ -33,11 +33,11 @@ namespace Battleship.Core
             return repository.FindGame(GameName);
         }
 
-        public bool AddShipToPlayersFleet(Guid GameId, string PlayerName, string coordinates, int size)
+        public bool AddShipToPlayersFleet(Guid GameId, string PlayerName, string coordinates, ShipInfo info)
         {
             try
             {
-                return repository.AddShipToFleet(GameId, PlayerName, coordinates, size);
+                return repository.AddShipToFleet(GameId, PlayerName, coordinates, info.ShipSize);
             }
             catch
             {
@@ -50,12 +50,17 @@ namespace Battleship.Core
             return repository.CheckCell(GameId, playerName, X, Y);
         }
 
-        public Tuple<int, string> SuggestNextShip(Guid GameId, string PlayerName)
+        public ShipInfo SuggestNextShipToAdd(Guid GameId, string PlayerName)
         {
-            int? size = repository.SuggestNextShipSize(GameId, PlayerName);
-            string name = GetShipNameBySize(size.Value);
-
-            return new Tuple<int, string>(size.Value, name);
+            try
+            {
+                var size = repository.SuggestNextShipSize(GameId, PlayerName);
+                return new ShipInfo(size.Value);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public bool? IsFleetFull(Guid gameId, string playerName)
@@ -71,20 +76,6 @@ namespace Battleship.Core
         public string GetNextPlayerToTurn(Guid gameId, string currentPlayer)
         {
             return repository.GetNextPlayer(gameId, currentPlayer);
-        }
-
-        //TODO move it to the repository base
-        private string GetShipNameBySize(int size)
-        {
-            switch (size)
-            {
-                case 1: return "Submarine";
-                case 2: return "Destroyer";
-                case 3: return "Cruiser";
-                case 4: return "Battleship";
-                case 5: return "Aircraft Carrier";
-                default: return null;
-            }
         }
     }
 }

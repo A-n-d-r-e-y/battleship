@@ -82,16 +82,16 @@ namespace Battleship.Console
         {
             while (!service.IsFleetFull(gameId.Value, playerName).Value)
             {
-                var shipInfo = service.SuggestNextShip(gameId.Value, playerName);
+                var shipInfo = service.SuggestNextShipToAdd(gameId.Value, playerName);
                 string coordinates;
 
                 do
                 {
                     //System.Console.Clear();
-                    System.Console.WriteLine(string.Format("{2}, please enter coordinates for a {0} size[{1}].", shipInfo.Item2, shipInfo.Item1, playerName));
+                    System.Console.WriteLine(string.Format("{2}, please enter coordinates for a {0} size[{1}].", shipInfo.ShipType, shipInfo.ShipSize, playerName));
                     coordinates = System.Console.ReadLine();
                 }
-                while (!service.AddShipToPlayersFleet(gameId.Value, playerName, coordinates, shipInfo.Item1));
+                while (!service.AddShipToPlayersFleet(gameId.Value, playerName, coordinates, shipInfo));
 
                 DrawField(service, gameId, playerName, "Ship was successfully created!");
             }
