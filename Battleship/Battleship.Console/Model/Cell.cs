@@ -43,6 +43,7 @@ namespace Battleship.Console.Model
         {
             return
                 from coord in coordinates.Split(new char[] { ';', ' ', '.', '-', ',', '!', '/', '\\', '|' })
+                where coord.Length == 2 || coord.Length == 3
                 select new Cell(coord);
         }
 

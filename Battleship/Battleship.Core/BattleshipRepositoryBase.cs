@@ -13,7 +13,7 @@ namespace Battleship.Core
 
     public enum ShotResult
     {
-        Miss, Hit, SecondHit, ShipDestroyed
+        Miss, Hit, SecondHit, ShipDestroyed, GameIsNotStarted
     }
 
     public class Info<T>

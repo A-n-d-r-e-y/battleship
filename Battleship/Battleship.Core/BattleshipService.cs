@@ -75,7 +75,11 @@ namespace Battleship.Core
 
         public Info<ShotResult> TakeTurn(Guid gameId, string player, string coordinates)
         {
-            return repository.TakeTurn(gameId, player, coordinates);
+            if (repository.IsGameStarted(gameId).HasValue && repository.IsGameStarted(gameId).Value)
+            {
+                return repository.TakeTurn(gameId, player, coordinates);
+            }
+            else return new Info<ShotResult>(ShotResult.GameIsNotStarted, "Your turn is skipped. The game is not started yet!");
         }
 
         public string GetNextPlayerToTurn(Guid gameId, string currentPlayer)

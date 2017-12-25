@@ -134,23 +134,40 @@ namespace Battleship.UnitTests
 
             Assert.IsFalse(service.IsFleetFull(gameId, Player1).Value);
 
-            var shipInfo = service.SuggestNextShipToAdd(gameId, Player1);
-            Assert.AreEqual<ShipType>(ShipType.AircraftCarrier, shipInfo.ShipType);
-            Assert.AreEqual<int>(5, shipInfo.ShipSize);
 
-            bool isShipAdded = service.AddShipToPlayersFleet(gameId, Player1, "a1,a2,a3,a4", shipInfo);
+            SuggestAndAddNewShip(gameId, Player1, ShipType.AircraftCarrier, 5, "a1,a2,a3,a4,a5", "p1,5");
+
+            //////////////// lousiness tests
+            bool isShipAdded = service.AddShipToPlayersFleet(gameId, Player1, "a1,a2,a3,a4", new ShipInfo(5));
             Assert.IsFalse(isShipAdded, "Ship size by coordinates doesn't match shipInfo.Size");
-
-            isShipAdded = service.AddShipToPlayersFleet(gameId, Player1, "a1,a2,a3,a4,a5", shipInfo);
-            Assert.IsTrue(isShipAdded);
-
             Assert.IsFalse(service.IsGameStarted(gameId), "Not all ships are added");
             Assert.IsFalse(service.IsGameEnded(gameId), "Neather of the players have their fleets destroyed");
+            Assert.IsTrue(service.TakeTurn(gameId, Player2, "b3").Value == ShotResult.GameIsNotStarted);
+            ////////////////
 
-            Assert.IsTrue(service.TakeTurn(gameId, Player2, "b3").Value == ShotResult.Miss, "so far there are no ships on this coordinate");
+            SuggestAndAddNewShip(gameId, Player2, ShipType.AircraftCarrier, 5, "a1,a2,a3,a4,a5", "p2,5");
+            SuggestAndAddNewShip(gameId, Player1, ShipType.Battleship, 4, "d1;d2;d3;d4", "p1,4");
+            SuggestAndAddNewShip(gameId, Player1, ShipType.Cruiser, 3, "b6,c6,d6", "p1,3");
+            SuggestAndAddNewShip(gameId, Player1, ShipType.Destroyer, 2, "b8;c8;", "p1,21");
+            SuggestAndAddNewShip(gameId, Player1, ShipType.Destroyer, 2, "e8;f8", "p1,22");
+            SuggestAndAddNewShip(gameId, Player1, ShipType.Submarine, 1, "h3;", "p1,11");
+            SuggestAndAddNewShip(gameId, Player1, ShipType.Submarine, 1, "h7", "p1,12");
+
+
+            // check crossings!!!
 
             //DrawField
             //DrawFleet(FIRST_PLAYER_FLEET);
+        }
+
+        private void SuggestAndAddNewShip(Guid gameId, string playerName, ShipType expectedSuggestion, int expectedShipSize, string shipCoordinates, string assertionMessage)
+        {
+            var shipInfo = service.SuggestNextShipToAdd(gameId, playerName);
+            Assert.AreEqual<ShipType>(expectedSuggestion, shipInfo.ShipType, assertionMessage+",1");
+            Assert.AreEqual<int>(expectedShipSize, shipInfo.ShipSize, assertionMessage+",2");
+
+            bool isShipAdded = service.AddShipToPlayersFleet(gameId, playerName, shipCoordinates, shipInfo);
+            Assert.IsTrue(isShipAdded, assertionMessage+",3");
         }
 
         //private void CreateFleetForPlayer(BattleshipService service, string playerName, Guid? gameId)
