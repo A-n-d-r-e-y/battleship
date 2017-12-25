@@ -144,9 +144,8 @@ namespace Battleship.UnitTests
             isShipAdded = service.AddShipToPlayersFleet(gameId, Player1, "a1,a2,a3,a4,a5", shipInfo);
             Assert.IsTrue(isShipAdded);
 
-            Assert.IsTrue(
-                service.IsGameEnded(gameId), 
-                "in fact it shouldn't be started yet, because second player don't have any ships in his/her fleet");
+            Assert.IsFalse(service.IsGameStarted(gameId), "Not all ships are added");
+            Assert.IsFalse(service.IsGameEnded(gameId), "Neather of the players have their fleets destroyed");
 
             Assert.IsTrue(service.TakeTurn(gameId, Player2, "b3").Value == ShotResult.Miss, "so far there are no ships on this coordinate");
 

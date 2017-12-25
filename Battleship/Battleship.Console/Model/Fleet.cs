@@ -31,6 +31,19 @@ namespace Battleship.Console.Model
             get { return GetShips().Count() == 0; }
         }
 
+        public bool IsFleetDestroyed
+        {
+            get
+            {
+                return IsFleetFull &&
+                  (
+                      from s in GetShips()
+                      where !s.IsDestroyed
+                      select s
+                  ).Count() == 0;
+            }
+        }
+
         public bool AddShip(Ship ship)
         {
             if (fleetEmptySpaceMap[ship.Length] > 0)

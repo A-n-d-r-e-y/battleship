@@ -133,7 +133,16 @@ namespace Battleship.Console
         {
             if (GameId == this.GameId.Value)
             {
-                return GuestPlayersFleet.IsFleetEmpty || HostPlayersFleet.IsFleetEmpty;
+                return GuestPlayersFleet.IsFleetDestroyed || HostPlayersFleet.IsFleetDestroyed;
+            }
+            else return null;
+        }
+
+        public override bool? IsGameStarted(Guid gameId)
+        {
+            if (GameId == this.GameId.Value)
+            {
+                return GuestPlayersFleet.IsFleetFull && HostPlayersFleet.IsFleetFull;
             }
             else return null;
         }

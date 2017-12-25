@@ -15,6 +15,11 @@ namespace Battleship.Core
             return repository.IsGameOver(GameId).Value;
         }
 
+        public bool IsGameStarted(Guid GameId)
+        {
+            return repository.IsGameStarted(GameId).Value;
+        }
+
         public BattleshipService(BattleshipRepositoryBase repository)
         {
             if (repository == null) throw new ArgumentNullException("repository");

@@ -38,6 +38,7 @@ namespace Battleship.Core
         public abstract int? SuggestNextShipSize(Guid gameId, string playerName);
         public abstract bool? IsFleetFull(Guid gameId, string playerName);
         public abstract bool? IsGameOver(Guid gameId);
+        public abstract bool? IsGameStarted(Guid gameId);
         public abstract Info<ShotResult> TakeTurn(Guid gameId, string player, string coordinates);
         public abstract string GetNextPlayer(Guid gameId, string currentPlayer);
     }
